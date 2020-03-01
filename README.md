@@ -8,7 +8,8 @@
 [![Infection MSI][ico-mutation]][link-mutation]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-This package provides a set of tools to test Laravel FormRequest. It is strongly inspired by the package [mohammedmanssour/form-request-tester](https://github.com/mohammedmanssour/form-request-tester).
+This package provides a set of tools to test Laravel FormRequest.
+It is strongly inspired by the package [mohammedmanssour/form-request-tester](https://github.com/mohammedmanssour/form-request-tester).
 
 ## Technologies
 
