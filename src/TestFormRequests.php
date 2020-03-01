@@ -24,7 +24,7 @@ trait TestFormRequests
     /**
      * The current form request that needs to be tested
      *
-     * @var \Illuminate\Foundation\Http\FormRequest
+     * @var \Illuminate\Foundation\Http\FormRequest|PHPUnit\Framework\MockObject\MockObject
      */
     private $currentFormRequest;
 
@@ -114,7 +114,7 @@ trait TestFormRequests
 
         if (\is_array($factory)) {
             $mockOptions = $factory;
-            $factory = function (string $formRequestType, array $args) use ($mockOptions) {
+            $factory = function (string $formRequestType, array $args) use ($mockOptions): MockObject {
                 return \call_user_func_array(
                     [$this, 'getMockForAbstractClass'],
                     \array_merge([$formRequestType, $args], $mockOptions)
@@ -244,52 +244,53 @@ trait TestFormRequests
     public function assertValidationPassed()
     {
         if (!$this->formRequestAuthorized) {
-            Assert::fail('Form Request is not authorized');
+            Assert::fail(Messages::NOT_AUTHORIZED);
         }
 
         if (!empty($this->errors)) {
-            Assert::fail('Validation have failed');
+            Assert::fail(Messages::FAILED);
         }
 
-        $this->succeed('Validation passed successfully');
+        $this->succeed(Messages::SUCCEED);
         return $this;
     }
 
     /**
-     * assert form request validation have failed
+     * Asserts form request validation have failed.
      *
      * @return $this
      */
     public function assertValidationFailed()
     {
         if (!$this->formRequestAuthorized) {
-            Assert::fail('Form Request is not authorized');
+            Assert::fail(Messages::NOT_AUTHORIZED);
         }
 
         if (empty($this->errors)) {
-            Assert::fail('Validation have passed');
+            Assert::fail(Messages::SUCCEED);
         }
 
-        $this->succeed('Validation have failed');
+        $this->succeed(Messages::FAILED);
         return $this;
     }
 
     /**
-     * assert the validation errors has the following keys
+     * Asserts the validation errors has the expected keys.
      *
      * @param array $keys
+     *
      * @return $this
      */
     public function assertValidationErrors($keys)
     {
         if (!$this->formRequestAuthorized) {
-            Assert::fail('Form Request is not authorized');
+            Assert::fail(Messages::NOT_AUTHORIZED);
         }
 
         foreach (Arr::wrap($keys) as $key) {
             $this->assertTrue(
                 isset($this->errors[$key]),
-                "Failed to find a validation error for key: '{$key}'"
+                \sprintf(Messages::MISSING_ERROR, $key)
             );
         }
 
@@ -298,21 +299,22 @@ trait TestFormRequests
 
 
     /**
-     * assert the validation errors doesn't have a key
+     * Asserts the validation errors doesn't have the given keys.
      *
      * @param array $keys
+     *
      * @return $this
      */
     public function assertValidationErrorsMissing($keys)
     {
         if (!$this->formRequestAuthorized) {
-            Assert::fail('Form Request is not authorized');
+            Assert::fail(Messages::NOT_AUTHORIZED);
         }
 
         foreach (Arr::wrap($keys) as $key) {
             $this->assertTrue(
                 !isset($this->errors[$key]),
-                "validation error for key: '{$key}' was found in errors array"
+                \sprintf(Messages::ERROR_NOT_MISSING, $key)
             );
         }
 
@@ -320,18 +322,24 @@ trait TestFormRequests
     }
 
     /**
-     * assert that validation has the messages
+     * Assert that validation has the expected messages.
+     *
+     * @param array $messages
      *
      * @return $this
      */
     public function assertValidationMessages($messages)
     {
+        if (!$this->formRequestAuthorized) {
+            Assert::fail(Messages::NOT_AUTHORIZED);
+        }
+
         $errors = Arr::flatten(Arr::wrap($this->errors));
         foreach ($messages as $message) {
             $this->assertContains(
                 $message,
                 $errors,
-                "Failed to find the validation message '${message}' in the validation messages"
+                \sprintf(Messages::MISSING_MESSAGE, $message)
             );
         }
 
@@ -345,7 +353,7 @@ trait TestFormRequests
      */
     public function assertAuthorized()
     {
-        $this->assertTrue($this->formRequestAuthorized, "Form Request is not authorized");
+        $this->assertTrue($this->formRequestAuthorized, Messages::NOT_AUTHORIZED);
 
         return $this;
     }
@@ -357,7 +365,7 @@ trait TestFormRequests
      */
     public function assertNotAuthorized()
     {
-        $this->assertFalse($this->formRequestAuthorized, "Form Request is authorized");
+        $this->assertFalse($this->formRequestAuthorized, Messages::AUTHORIZED);
 
         return $this;
     }

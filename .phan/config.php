@@ -283,6 +283,9 @@ return [
         // 'PhanPluginDescriptionlessCommentOnProtectedMethod',
         // 'PhanPluginNoCommentOnPrivateMethod',
         // 'PhanPluginDescriptionlessCommentOnPrivateMethod',
+        'PhanPluginUnknownArrayMethodParamType',
+        'PhanPluginUnknownArrayClosureParamType',
+        'PhanPluginUnknownArrayPropertyType'
     ],
 
     // If empty, no filter against issues types will be applied.

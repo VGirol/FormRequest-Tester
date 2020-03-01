@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace VGirol\FormRequestTester\Tests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Mail\Message;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use PHPUnit\Framework\Assert as PHPUnit;
+use VGirol\FormRequestTester\Messages;
 use VGirol\FormRequestTester\TestFormRequests;
 
 class FormRequestAssertionsTest extends TestCase
@@ -101,7 +103,7 @@ class FormRequestAssertionsTest extends TestCase
 
         PHPUnit::assertSame($this->tester, $obj);
 
-        $this->setAssertionFailure('Form Request is not authorized');
+        $this->setAssertionFailure(Messages::NOT_AUTHORIZED);
 
         $this->tester->assertValidationPassed();
     }
@@ -117,7 +119,7 @@ class FormRequestAssertionsTest extends TestCase
 
         PHPUnit::assertSame($this->tester, $obj);
 
-        $this->setAssertionFailure('Validation have failed');
+        $this->setAssertionFailure(Messages::FAILED);
 
         $this->tester->assertValidationPassed();
     }
@@ -133,7 +135,7 @@ class FormRequestAssertionsTest extends TestCase
 
         PHPUnit::assertSame($this->tester, $obj);
 
-        $this->setAssertionFailure('Validation have passed');
+        $this->setAssertionFailure(Messages::SUCCEED);
 
         $this->tester->assertValidationFailed();
     }
@@ -149,7 +151,7 @@ class FormRequestAssertionsTest extends TestCase
 
         PHPUnit::assertSame($this->tester, $obj);
 
-        $this->setAssertionFailure('Form Request is not authorized');
+        $this->setAssertionFailure(Messages::NOT_AUTHORIZED);
 
         $this->tester->assertValidationFailed();
     }
@@ -197,7 +199,7 @@ class FormRequestAssertionsTest extends TestCase
 
         $this->tester->mockFormRequest(FormRequest::class, [ 'data' => 'value' ], [], $factory);
 
-        $this->setAssertionFailure('Form Request is not authorized');
+        $this->setAssertionFailure(Messages::NOT_AUTHORIZED);
 
         $this->tester->assertAuthorized();
     }
@@ -227,8 +229,182 @@ class FormRequestAssertionsTest extends TestCase
 
         $this->tester->mockFormRequest(FormRequest::class, [ 'data' => 'value' ], [], $factory);
 
-        $this->setAssertionFailure('Form Request is authorized');
+        $this->setAssertionFailure(Messages::AUTHORIZED);
 
         $this->tester->assertNotAuthorized();
+    }
+
+    /**
+     * @test
+     */
+    public function assertValidationErrorsSucceed()
+    {
+        $factory = $this->getFactory(
+            [
+                'authorize' => true,
+                'rules' => [
+                    'data' => 'required',
+                    'meta' => 'string'
+                ]
+            ]
+        );
+
+        $this->tester->mockFormRequest(FormRequest::class, [ 'meta' => 666 ], [], $factory);
+
+        $obj = $this->tester->assertValidationErrors(['data', 'meta']);
+
+        PHPUnit::assertSame($this->tester, $obj);
+    }
+
+    /**
+     * @test
+     */
+    public function assertValidationErrorsNotAuthorized()
+    {
+        $factory = $this->getFactory(['authorize' => false]);
+
+        $this->tester->mockFormRequest(FormRequest::class, [ 'data' => 'value' ], [], $factory);
+
+        $this->setAssertionFailure(Messages::NOT_AUTHORIZED);
+
+        $this->tester->assertValidationErrors(['data']);
+    }
+
+    /**
+     * @test
+     */
+    public function assertValidationErrorsFail()
+    {
+        $factory = $this->getFactory(
+            [
+                'authorize' => true,
+                'rules' => [
+                    'data' => 'required',
+                    'meta' => 'string'
+                ]
+            ]
+        );
+
+        $this->tester->mockFormRequest(FormRequest::class, [ 'data' => 'value' ], [], $factory);
+
+        $this->setAssertionFailure(\sprintf(Messages::MISSING_ERROR, 'data'));
+
+        $this->tester->assertValidationErrors(['data']);
+    }
+
+    /**
+     * @test
+     */
+    public function assertValidationErrorsMissingSucceed()
+    {
+        $factory = $this->getFactory(
+            [
+                'authorize' => true,
+                'rules' => [
+                    'data' => 'required',
+                    'meta' => 'string'
+                ]
+            ]
+        );
+
+        $this->tester->mockFormRequest(FormRequest::class, [ 'meta' => 'ok' ], [], $factory);
+
+        $obj = $this->tester->assertValidationErrorsMissing(['meta']);
+
+        PHPUnit::assertSame($this->tester, $obj);
+    }
+
+    /**
+     * @test
+     */
+    public function assertValidationErrorsMissingNotAuthorized()
+    {
+        $factory = $this->getFactory(['authorize' => false]);
+
+        $this->tester->mockFormRequest(FormRequest::class, [ 'data' => 'value' ], [], $factory);
+
+        $this->setAssertionFailure(Messages::NOT_AUTHORIZED);
+
+        $this->tester->assertValidationErrorsMissing(['data']);
+    }
+
+    /**
+     * @test
+     */
+    public function assertValidationErrorsMissingFail()
+    {
+        $factory = $this->getFactory(
+            [
+                'authorize' => true,
+                'rules' => [
+                    'data' => 'required',
+                    'meta' => 'string'
+                ]
+            ]
+        );
+
+        $this->tester->mockFormRequest(FormRequest::class, [ 'data' => 'value', 'meta' => 666 ], [], $factory);
+
+        $this->setAssertionFailure(\sprintf(Messages::ERROR_NOT_MISSING, 'meta'));
+
+        $this->tester->assertValidationErrorsMissing(['meta']);
+    }
+
+    /**
+     * @test
+     */
+    public function assertValidationMessagesSucceed()
+    {
+        $factory = $this->getFactory(
+            [
+                'authorize' => true,
+                'rules' => [
+                    'data' => 'required',
+                    'meta' => 'string'
+                ]
+            ]
+        );
+
+        $this->tester->mockFormRequest(FormRequest::class, [ 'meta' => 'ok' ], [], $factory);
+
+        $obj = $this->tester->assertValidationMessages(['The data field is required.']);
+
+        PHPUnit::assertSame($this->tester, $obj);
+    }
+
+    /**
+     * @test
+     */
+    public function assertValidationMessagesNotAuthorized()
+    {
+        $factory = $this->getFactory(['authorize' => false]);
+
+        $this->tester->mockFormRequest(FormRequest::class, [ 'data' => 'value' ], [], $factory);
+
+        $this->setAssertionFailure(Messages::NOT_AUTHORIZED);
+
+        $this->tester->assertValidationMessages(['test']);
+    }
+
+    /**
+     * @test
+     */
+    public function assertValidationMessagesFail()
+    {
+        $factory = $this->getFactory(
+            [
+                'authorize' => true,
+                'rules' => [
+                    'data' => 'required',
+                    'meta' => 'string'
+                ]
+            ]
+        );
+
+        $this->tester->mockFormRequest(FormRequest::class, [ 'data' => 'value', 'meta' => 666 ], [], $factory);
+
+        $this->setAssertionFailure(\sprintf(Messages::MISSING_MESSAGE, 'not present'));
+
+        $this->tester->assertValidationMessages(['not present']);
     }
 }

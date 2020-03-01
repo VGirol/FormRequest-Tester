@@ -9,3 +9,9 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Added
 
 - First release
+
+## v1.0.1 - 2020-03-01
+
+### Added
+
+- Added abstract class for messages
