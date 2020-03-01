@@ -39,6 +39,8 @@ $ composer require vgirol/formrequest-tester
 
 ## Usage
 
+Assertions can be chained :
+
 ``` php
 use App\Requests\DummyFormRequest;
 use Orchestra\Testbench\TestCase;
