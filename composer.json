@@ -1,0 +1,63 @@
+{
+    "name": "vgirol/formrequest-tester",
+    "type": "library",
+    "description": "Tools to test Laravel FormRequest",
+    "keywords": [
+        "VGirol",
+        "FormRequestTester"
+    ],
+    "homepage": "https://github.com/VGirol/FormRequest-Tester",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vincent Girol",
+            "email": "vincent@girol.fr",
+            "homepage": "https://github.com/VGirol",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php" : "^7.2|^7.3",
+        "laravel/framework": "^5.8|^6.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~8.5.2|^9.0",
+        "infection/infection": "^0.14|^0.15",
+        "orchestra/testbench": "~3.8|^4.0",
+        "vgirol/phpunit-exception": "~1.0.0|dev-master"
+    },
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "VGirol\\FormRequestTester\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "VGirol\\FormRequestTester\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "setup": "bash install/setup.sh",
+        "post-update-cmd": [
+            "@setup"
+        ],
+        "test": "./vendor/bin/phpunit tests ",
+        "infection": "./vendor/bin/infection --coverage=build/coverage --threads=$(nproc) --configuration=infection.json --min-msi=70 --min-covered-msi=70",
+        "travis": [
+            "@test",
+            "@infection"
+        ],
+        "build": [
+            "@travis"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
