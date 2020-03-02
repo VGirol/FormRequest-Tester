@@ -72,7 +72,7 @@ class FormRequestTester extends TestCase
             $form,
             [
                 'method' => 'POST',
-                'route' => 'dummy.route'
+                'route' => '/dummy-route'
             ]
         )->assertValidationPassed();
     }
