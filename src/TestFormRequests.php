@@ -4,7 +4,9 @@ namespace VGirol\FormRequestTester;
 
 use \Mockery;
 use Closure;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
@@ -24,7 +26,7 @@ trait TestFormRequests
     /**
      * The current form request that needs to be tested
      *
-     * @var \Illuminate\Foundation\Http\FormRequest|PHPUnit\Framework\MockObject\MockObject
+     * @var FormRequest|MockObject
      */
     private $currentFormRequest;
 
@@ -108,18 +110,18 @@ trait TestFormRequests
      */
     public function createFormRequestMock(string $formRequestType, $data = [], $options = [], $factory = null)
     {
-        if ($factory === null) {
-            $factory = [];
-        }
-
-        if (\is_array($factory)) {
-            $mockOptions = $factory;
+        if (\is_array($factory) || ($factory === null)) {
+            $mockOptions = $factory ?? [];
             $factory = function (string $formRequestType, array $args) use ($mockOptions): MockObject {
                 return \call_user_func_array(
                     [$this, 'getMockForAbstractClass'],
                     \array_merge([$formRequestType, $args], $mockOptions)
                 );
             };
+        }
+
+        if (!($factory instanceof Closure)) {
+            throw new Exception('$factory parameter must be of type Closure, array or null.');
         }
 
         $this->setFormRequestFactory($formRequestType, $factory);

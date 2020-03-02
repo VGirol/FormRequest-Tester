@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace VGirol\FormRequestTester\Tests;
 
+use Exception;
 use Illuminate\Foundation\Http\FormRequest;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use PHPUnit\Framework\Assert as PHPUnit;
@@ -175,5 +176,25 @@ class FormRequestCreationTest extends TestCase
         PHPUnit::assertEquals($route, $formRequest->path());
         PHPUnit::assertEquals($data, $formRequest->all());
         PHPUnit::assertNull($property->getValue($formRequest));
+    }
+
+    /**
+     * @test
+     */
+    public function createFormRequestMockWithBadFactory()
+    {
+        $data = [
+            'key' => 'value'
+        ];
+        $route = 'custom-route';
+        $method = 'POST';
+        $options = [
+            'route' => "/{$route}",
+            'method' => $method
+        ];
+
+        $this->setFailureException(Exception::class);
+
+        $this->tester->createFormRequestMock(FormRequest::class, $data, $options, 'bad');
     }
 }
