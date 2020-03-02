@@ -15,3 +15,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Added
 
 - Added abstract class for messages
+
+## v1.0.2 - 2020-03-02
+
+### Added
+
+- Exception is thrown when calling "createFormRequestMock" method with bad type for $factory parameter
+- Added support of Laravel 7
