@@ -21,4 +21,4 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Added
 
 - Exception is thrown when calling "createFormRequestMock" method with bad type for $factory parameter
-- Added support of Laravel 7
+- Added support for Laravel 7
