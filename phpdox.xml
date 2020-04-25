@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <phpdox xmlns="http://xml.phpdox.net/config" silent="false">
 
-    <project name="VGirol/JsonApi-Assert" source="${basedir}/src" workdir="${basedir}/build/phpdox/xml">
+    <project name="VGirol/JsonApi-Structure" source="${basedir}/src" workdir="${basedir}/build/phpdox/xml">
 
         <collector publiconly="false" backend="parser" />
 
-        <generator output="${basedir}/docs/api">
+        <generator output="${basedir}/docs">
 
             <enrich base="${basedir}/build">
                 <source type="build" />
@@ -28,9 +28,9 @@
                 </source>
             </enrich>
 
-            <build engine="html" enabled="true" output="html">
+            <build engine="html" enabled="true" output="ref">
                 <template dir="${phpDox.home}/templates/html" />
-                <file extension="xhtml" />
+                <file extension="html" />
             </build>
 
             <!-- <build engine="xml" enabled="true" output="xml" /> -->
