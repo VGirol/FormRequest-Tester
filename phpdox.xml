@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <phpdox xmlns="http://xml.phpdox.net/config" silent="false">
 
-    <project name="VGirol/JsonApi-Structure" source="${basedir}/src" workdir="${basedir}/build/phpdox/xml">
+    <project name="VGirol/FormRequest-Tester" source="${basedir}/src" workdir="${basedir}/build/phpdox/xml">
 
         <collector publiconly="false" backend="parser" />
 
