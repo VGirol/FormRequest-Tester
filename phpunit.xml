@@ -1,39 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit
-        xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        bootstrap="vendor/autoload.php"
-        backupGlobals="false"
-        backupStaticAttributes="false"
-        colors="true"
-        verbose="true"
-        convertErrorsToExceptions="true"
-        convertNoticesToExceptions="true"
-        convertWarningsToExceptions="true"
-        processIsolation="false"
-        stopOnFailure="false">
-    <testsuites>
-        <testsuite name=":vendor Test Suite">
-            <directory suffix="Test.php">./tests</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src</directory>
-            <exclude>
-                <!-- To avoid error when running phpunit with code coverage :
-                PHP Fatal error:  Uncaught RuntimeException: A facade root has not been set.
-                in /datas/Dev_Informatique/www/VGirol/JsonApi/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php:236
-                see https://laracasts.com/discuss/channels/testing/class-route-not-found-when-running-phpunit-with-code-coverage -->
-                <file>./src/macro/route.php</file>
-                <file>./src/ide_helpers.php</file>
-            </exclude>
-        </whitelist>
-    </filter>
-    <logging>
-        <log type="coverage-html" target="./build/coverage/html"/>
-        <log type="coverage-xml" target="./build/coverage/coverage-xml"/>
-        <log type="coverage-clover" target="./build/coverage/clover.xml"/>
-        <log type="junit" target="./build/coverage/junit.xml"/>
-    </logging>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" bootstrap="vendor/autoload.php" backupGlobals="false" backupStaticAttributes="false" colors="true" verbose="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false" stopOnFailure="false">
+  <coverage processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+    <exclude>
+      <file>./src/macro/route.php</file>
+      <file>./src/ide_helpers.php</file>
+    </exclude>
+    <report>
+      <clover outputFile="./build/coverage/clover.xml"/>
+      <html outputDirectory="./build/coverage/html"/>
+      <xml outputDirectory="./build/coverage/coverage-xml"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name=":vendor Test Suite">
+      <directory suffix="Test.php">./tests</directory>
+    </testsuite>
+  </testsuites>
+  <logging>
+    <junit outputFile="./build/coverage/junit.xml"/>
+  </logging>
 </phpunit>
