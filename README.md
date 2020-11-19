@@ -13,8 +13,8 @@ It is strongly inspired by the package [mohammedmanssour/form-request-tester](ht
 
 ## Technologies
 
-- PHP 7.2+
-- Laravel 5.8+
+- PHP 7.3+
+- Laravel 6+
 
 ## Install
 

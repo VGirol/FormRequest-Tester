@@ -28,3 +28,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Added
 
 - Added support for Laravel 8
+
+## v1.1.0 - 2020-11-19
+
+### Added
+
+- Remove support for php 7.2
+- Bump phpunit version
+- Remove support for Laravel 5.8
+- Update travis config
