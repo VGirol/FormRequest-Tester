@@ -37,3 +37,9 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - Bump phpunit version
 - Remove support for Laravel 5.8
 - Update travis config
+
+## v1.1.1 - 2021-04-02
+
+### Added
+
+- Change infection configuration
