@@ -4,6 +4,7 @@ language: php
 php:
   - 7.3
   - 7.4
+  - 8.0
 
 # This triggers builds to run on the new TravisCI infrastructure.
 # See: http://docs.travis-ci.com/user/workers/container-based-infrastructure/
@@ -18,6 +19,7 @@ matrix:
   fast_finish: true
 
 before_script:
+  - export XDEBUG_MODE=coverage
   - travis_retry composer self-update
   - travis_retry composer install ${COMPOSER_FLAGS} --no-interaction --prefer-dist
   - mkdir -p build/coverage
